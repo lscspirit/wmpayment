@@ -17,11 +17,10 @@ describe("PaypalHelper", function() {
       before(function() {
         this.desc = chance.sentence();
 
-        return factory.build("credit_card").then(cc => {
+        // for the purpose of this spec, we exclude AMEX because it only supports USD
+        return factory.build("credit_card", {}, { excludeAmex: true }).then(cc => {
           this.cc = cc;
-          return factory.build("order_item", {
-            currency: chance.pickone(["HKD", "USD"])
-          });
+          return factory.build("order_item", {}, { currencies: ["USD", "EUR", "AUD"] });
         }).then(order_item => {
           this.order_item = order_item;
         });

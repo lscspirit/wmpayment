@@ -65,7 +65,7 @@ export default class PaypalHelper {
     return new Promise((resolve, reject) => {
       paypal.payment.create(payment_payload, (error, payment) => {
         if (error) {
-          reject(error);
+          reject(new Error(error.message));
         } else {
           resolve({
             id: payment.id,
