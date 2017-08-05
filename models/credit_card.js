@@ -25,8 +25,8 @@ export default class CreditCard {
    * @param  {Object}  attrs    attributes
    * @param  {String}  attrs.name         cardholder name
    * @param  {String}  attrs.number       card number
-   * @param  {String}  attrs.expire_year  expiration year
-   * @param  {String}  attrs.expire_month expiration month
+   * @param  {Integer} attrs.expire_year  expiration year
+   * @param  {Integer} attrs.expire_month expiration month
    * @param  {String}  attrs.cvv          cvv/cvv2 code
    */
   constructor(attrs) {
@@ -61,13 +61,13 @@ export default class CreditCard {
 
   /**
    * Expiration Year
-   * @return {String} expiration year
+   * @return {Integer} expiration year
    */
   get expire_year()  { return this._expire_year; }
 
   /**
    * Expiration Month
-   * @return {String} expiration Month
+   * @return {Integer} expiration Month
    */
   get expire_month() { return this._expire_month; }
 
@@ -121,12 +121,12 @@ export default class CreditCard {
     }
 
     // check expiration year
-    if (!cc_valid.expirationYear(this._expire_year).isValid) {
+    if (!cc_valid.expirationYear(this._expire_year.toString()).isValid) {
       this._errors.add("expire_year", "invalid expiration year");
     }
 
     // check expiration month
-    if (!cc_valid.expirationMonth(this._expire_month).isValid) {
+    if (!cc_valid.expirationMonth(this._expire_month.toString()).isValid) {
       this._errors.add("expire_month", "invalid expiration month");
     }
 

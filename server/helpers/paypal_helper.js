@@ -44,8 +44,8 @@ export default class PaypalHelper {
           credit_card: {
             number: cc.number,
             type: _convertToPaypalType(cc.type),
-            expire_month: cc.expire_month,
-            expire_year: cc.expire_year,
+            expire_month: cc.expire_month.toString(),
+            expire_year: cc.expire_year.toString(),
             cvv2: cc.cvv,
             first_name: first_name,
             last_name: last_name
