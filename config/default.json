@@ -3,5 +3,17 @@
     "mode": "sandbox",
     "clientId": "AWeStnDwQVPIQwxhsVplXCBeySDq-ehG5Sk_WLvy4nKIprmIC7ZQdZU7S7lGhYCX8VHpAkcBW7mS8AkB",
     "clientSecret": "EDC2KCvLI4_m8oWNu94x1hUhvZ9UmnbVO_p-A4IXYPNx9aZ_ckSQwxVnA4g961idHLN-DZdV4xcRy03Z"
+  },
+
+  "braintree": {
+    "mode": "sandbox",
+    "merchantId": "6x9rmv9jct972msx",
+    "publicKey": "4wgqj85dqjym9zrg",
+    "privateKey": "f18698bfdc5c9190a5454f2b842dea5a",
+    "merchantAccounts": {
+      "HKD": "wm-hkd",
+      "JPY": "wm-jpy",
+      "CNY": "wm-cny"
+    }
   }
 }
