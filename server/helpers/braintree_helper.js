@@ -17,18 +17,21 @@ const gateway   = braintree.connect({
 //
 export default class BraintreeHelper {
   /**
-   * Generate a ClientToken to be used for creating a nonce in the client
-   *
-   * @return {Promise<String>} a promise that will be resolved with the ClientToken string
+   * Make a credit card sale
+   * @param  {CreditCard} cc   credit card
+   * @param  {OrderItem}  item order item
+   * @return {Promise<Object>} 
    */
-  static generateClientToken() {
-    return gateway.clientToken.generate().then(resp => resp.clientToken);
-  }
-
-  static createSale(client_nonce, item) {
+  static createCreditCardSale(cc, item) {
     return gateway.transaction.sale({
       amount: item.amount.toString(),
-      paymentMethodNonce: client_nonce,
+      creditCard: {
+        number: cc.number,
+        cardholderName: cc.name,
+        cvv: cc.cvv,
+        expirationMonth: cc.expire_month,
+        expirationYear:  cc.expire_year
+      },
       merchantAccountId: _merchantAccountForCurrency(item.currency),
       options: {
         submitForSettlement: true
