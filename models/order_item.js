@@ -37,7 +37,7 @@ export default class OrderItem {
 
   /**
    * Item price
-   * @return {Integer} item price
+   * @return {Number} item price
    */
   get amount() { return this._amount; }
 
@@ -60,6 +60,8 @@ export default class OrderItem {
     // check currency code
     if (!Currencies[this._currency]) {
       this._errors.add("currency", "unsupported currency");
+    } else if (this._currency === Currencies.JPY && this._amount % 1 !== 0) {
+      this._errors.add("amount", "amount in JPY must be an integer");
     }
   }
 }
