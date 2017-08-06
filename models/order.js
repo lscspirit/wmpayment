@@ -13,7 +13,7 @@ const Currencies = {
   CNY: "CNY"
 };
 
-export default class OrderItem {
+export default class Order {
   /**
    * Order item
    *
@@ -66,4 +66,4 @@ export default class OrderItem {
   }
 }
 
-OrderItem.Currencies = Currencies;
+Order.Currencies = Currencies;

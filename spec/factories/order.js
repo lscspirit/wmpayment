@@ -1,20 +1,20 @@
 "use strict";
 
 import { factory } from "factory-girl";
-import OrderItem from "~/models/order_item";
+import Order from "~/models/order";
 
 const chance = require('chance').Chance();
 
-factory.define("order_item", OrderItem, buildOptions => {
+factory.define("order", Order, buildOptions => {
   const attrs = {};
 
   if (buildOptions.currencies) {
     attrs.currency = chance.pickone(buildOptions.currencies);
   } else {
-    attrs.currency = chance.pickone(Object.keys(OrderItem.Currencies));
+    attrs.currency = chance.pickone(Object.keys(Order.Currencies));
   }
 
-  if (attrs.currency === OrderItem.Currencies.JPY) {
+  if (attrs.currency === Order.Currencies.JPY) {
     attrs.amount = chance.integer({ min: 1, max: 10000 });
   } else {
     attrs.amount = chance.floating({ min: 0.01, max: 10000, fixed: 2 })

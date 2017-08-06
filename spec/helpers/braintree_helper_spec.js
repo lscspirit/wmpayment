@@ -30,10 +30,10 @@ describe("BraintreeHelper", function() {
 
   describe("::createCreditCardSale()", function() {
     before(function() {
-      return factory.build("order_item", {}, {
+      return factory.build("order", {}, {
         currencies: ["HKD", "JPY", "CNY"]
-      }).then(order_item => {
-        this.order_item = order_item;
+      }).then(order => {
+        this.order = order;
       });
     });
 
@@ -49,7 +49,7 @@ describe("BraintreeHelper", function() {
       });
 
       before(function() {
-        this.operation = BraintreeHelper.createCreditCardSale(this.cc, this.order_item);
+        this.operation = BraintreeHelper.createCreditCardSale(this.cc, this.order);
       });
 
       it("returns a promise", function() {
@@ -75,7 +75,7 @@ describe("BraintreeHelper", function() {
       });
 
       before(function() {
-        this.operation = BraintreeHelper.createCreditCardSale(this.cc, this.order_item);
+        this.operation = BraintreeHelper.createCreditCardSale(this.cc, this.order);
       });
 
       it("returns a promise", function() {

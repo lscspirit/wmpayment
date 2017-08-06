@@ -20,16 +20,16 @@ describe("PaypalHelper", function() {
         // for the purpose of this spec, we exclude AMEX because it only supports USD
         return factory.build("credit_card", {}, { excludeAmex: true }).then(cc => {
           this.cc = cc;
-          return factory.build("order_item", {}, { currencies: ["USD", "EUR", "AUD"] });
-        }).then(order_item => {
-          this.order_item = order_item;
+          return factory.build("order", {}, { currencies: ["USD", "EUR", "AUD"] });
+        }).then(order => {
+          this.order = order;
         });
       });
 
       before(function() {
         // only make the actual call once for all the test below
         // because it is expensive to make the api call to paypal
-        this.result = PaypalHelper.createCreditCardPayment(this.cc, this.order_item, this.desc);
+        this.result = PaypalHelper.createCreditCardPayment(this.cc, this.order, this.desc);
       });
 
       it("returns a promise", function() {
@@ -59,18 +59,18 @@ describe("PaypalHelper", function() {
 
         return factory.build("credit_card", { number: "1234567890" }).then(cc => {
           this.cc = cc;
-          return factory.build("order_item", {
+          return factory.build("order", {
             currency: chance.pickone(["HKD", "USD"])
           });
-        }).then(order_item => {
-          this.order_item = order_item;
+        }).then(order => {
+          this.order = order;
         });
       });
 
       before(function() {
         // only make the actual call once for all the test below
         // because it is expensive to make the api call to paypal
-        this.result = PaypalHelper.createCreditCardPayment(this.cc, this.order_item, this.desc);
+        this.result = PaypalHelper.createCreditCardPayment(this.cc, this.order, this.desc);
       });
 
       it("returns a promise", function() {
@@ -88,18 +88,18 @@ describe("PaypalHelper", function() {
 
         return factory.build("credit_card").then(cc => {
           this.cc = cc;
-          return factory.build("order_item", {
+          return factory.build("order", {
             currency: "ABC"
           });
-        }).then(order_item => {
-          this.order_item = order_item;
+        }).then(order => {
+          this.order = order;
         });
       });
 
       before(function() {
         // only make the actual call once for all the test below
         // because it is expensive to make the api call to paypal
-        this.result = PaypalHelper.createCreditCardPayment(this.cc, this.order_item, this.desc);
+        this.result = PaypalHelper.createCreditCardPayment(this.cc, this.order, this.desc);
       });
 
       it("returns a promise", function() {

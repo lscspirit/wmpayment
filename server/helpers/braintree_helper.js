@@ -19,8 +19,8 @@ export default class BraintreeHelper {
   /**
    * Make a credit card sale
    * @param  {CreditCard} cc   credit card
-   * @param  {OrderItem}  item order item
-   * @return {Promise<Object>} 
+   * @param  {Order}      item order item
+   * @return {Promise<Object>}
    */
   static createCreditCardSale(cc, item) {
     return gateway.transaction.sale({

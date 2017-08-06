@@ -24,7 +24,7 @@ export default class PaypalHelper {
    * Make a credit card payment
    *
    * @param  {CreditCard} cc    credit card
-   * @param  {OrderItem}  item  order item
+   * @param  {Order}      item  order item
    * @param  {String}     desc  payment description
    * @return {Promise<Object>}
    */
