@@ -1,0 +1,4 @@
+{
+  "watch": ["server"],
+  "exec": "npm run babel-node ./bin/www"
+}

@@ -17,6 +17,9 @@ import appRouter from "~/server/router";
 
 const app = express();
 
+// public directory
+app.use(express.static(__dirname + "../public"));
+
 // setup view engine
 app.set("views", path.join(__dirname, "../views"));
 app.set("view engine", "ejs");
