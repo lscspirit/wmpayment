@@ -37,13 +37,11 @@ describe("PaypalHelper", function() {
       });
 
       it("the promise will be resolved", function() {
-        return this.result;
+        return expect(this.result).to.eventually.be.fulfilled;
       });
 
       it("resolves with the payment id", function() {
-        return this.result.then(payment => {
-          expect(payment.id).to.not.be.empty;
-        });
+        return expect(this.result).to.eventually.have.property("id");
       });
 
       it("resolves with an approved payment", function() {
@@ -75,8 +73,8 @@ describe("PaypalHelper", function() {
         expect(this.result).to.be.a('Promise');
       });
 
-      it("the promise will be rejected", function(done) {
-        this.result.catch(() => done());
+      it("the promise will be rejected", function() {
+        return expect(this.result).to.eventually.be.rejected;
       });
     });
 
@@ -102,8 +100,8 @@ describe("PaypalHelper", function() {
         expect(this.result).to.be.a('Promise');
       });
 
-      it("the promise will be rejected", function(done) {
-        this.result.catch(() => done());
+      it("the promise will be rejected", function() {
+        return expect(this.result).to.eventually.be.rejected;
       });
     });
   });

@@ -57,9 +57,7 @@ describe("BraintreeHelper", function() {
       });
 
       it("resolves with the transaction id", function() {
-        return this.operation.then(transaction => {
-          expect(transaction.id).to.not.be.empty;
-        });
+        return expect(this.operation).to.eventually.have.property("id");
       });
     });
 
