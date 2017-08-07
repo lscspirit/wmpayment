@@ -13,7 +13,7 @@ import PaymentProcessor from "~/server/lib/payment_processor";
 const chance = require('chance').Chance();
 let sandbox;
 
-describe.only("POST /payments", function() {
+describe("POST /payments", function() {
   beforeEach(function() {
     sandbox = sinon.sandbox.create();
   });
@@ -26,10 +26,12 @@ describe.only("POST /payments", function() {
     beforeEach(function() {
       const cc_prom    = factory.build("credit_card");
       const order_prom = factory.build("order");
+      const tran_prom  = factory.build("transaction", {}, { order: order_prom })
 
-      return Promise.all([cc_prom, order_prom]).then(values => {
+      return Promise.all([cc_prom, order_prom, tran_prom]).then(values => {
         this.cc    = values[0];
         this.order = values[1];
+        this.transaction = values[2];
         this.request = makePaymentRequest(this.order, this.cc);
       });
     });
@@ -37,18 +39,24 @@ describe.only("POST /payments", function() {
     describe("and successful payment", function() {
       beforeEach(function() {
         // stub a successful payment call
-        sandbox.stub(PaymentProcessor, "creditCardPayment").returns(Promise.resolve());
+        sandbox.stub(PaymentProcessor, "creditCardPayment").returns(Promise.resolve(this.transaction));
       });
 
       it("responds in json format", function() {
-        return this.request.catch(res => {
-          expect(res.response).to.be.json;
+        return this.request.then(res => {
+          expect(res).to.be.json;
         });
       });
 
       it("responds with status 201", function() {
         return this.request.then(res => {
           expect(res).to.have.status(201);
+        });
+      });
+
+      it("responds with the transaction data", function() {
+        return this.request.then(res => {
+          expect(res.body).to.deep.equal(this.transaction.toJSON());
         });
       });
     });
