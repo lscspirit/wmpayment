@@ -3,10 +3,44 @@
 import BaseModel from "~/models/base";
 
 export default class Transaction extends BaseModel {
-  constructor(attrs) {
+  /**
+   * Create a Transaction
+   *
+   * @param  {Object|Order} attrs_or_order   attributes or an Order object
+   * @param  {String} [gateway]       payment gateway
+   * @param  {String} [gateway_ref]   payment reference code
+   *
+   * @example <caption>with attributes</caption>
+   *   new Transaction({
+   *     cust_name:  "John Doe",
+   *     cust_phone: "123-4234",
+   *     currency:   "USD",
+   *     amount: 1232.02,
+   *     payment_gateway: "paypal",
+   *     payment_ref:     "dk3n2i9djl2h2"
+   *   });
+   *
+   * @example <caption>with attributes</caption>
+   *   new Transaction(order, "paypal", "dk3n2i9djl2h2");
+   *   
+   * @constructor
+   */
+  constructor(attrs_or_order, gateway, gateway_ref) {
     super();
 
-    const _attrs = attrs || {};
+    let _attrs = null;
+    if (arguments.length === 3) {
+      _attrs = {
+        cust_name:  attrs_or_order.customerName,
+        cust_phone: attrs_or_order.customerPhone,
+        currency:   attrs_or_order.currency,
+        amount:     attrs_or_order.amount,
+        payment_gateway: gateway,
+        payment_ref: gateway_ref
+      };
+    } else {
+      _attrs = attrs_or_order || {};
+    }
 
     this._id = _attrs.id;
     this._cust_name   = _attrs.cust_name;
@@ -16,6 +50,10 @@ export default class Transaction extends BaseModel {
     this._currency = _attrs.currency;
     this._amount   = _attrs.amount;
   }
+
+  //
+  // Accessors
+  //
 
   /**
    * Transaction ID
