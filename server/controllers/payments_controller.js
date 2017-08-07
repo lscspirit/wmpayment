@@ -18,7 +18,7 @@ router.post("/", function(req, res, next) {
   const cc    = new CreditCard(req.body.cc);
 
   if (order.validate() && cc.validate()) {
-    PaymentProcessor.creditCardPayment(order, cc).then(transaction => {
+    PaymentProcessor.processCreditCardPayment(cc, order).then(transaction => {
       res.status(201).json(transaction);
     }, error => {
       res.status(400).json(errorResponseJson(error));

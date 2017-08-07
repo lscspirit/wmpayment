@@ -39,7 +39,7 @@ describe("POST /payments", function() {
     describe("and successful payment", function() {
       beforeEach(function() {
         // stub a successful payment call
-        sandbox.stub(PaymentProcessor, "creditCardPayment").returns(Promise.resolve(this.transaction));
+        sandbox.stub(PaymentProcessor, "processCreditCardPayment").returns(Promise.resolve(this.transaction));
       });
 
       it("responds in json format", function() {
@@ -66,7 +66,7 @@ describe("POST /payments", function() {
         // stub a successful payment call
         const rejection = Promise.reject(new Error("payment failed"));
         rejection.catch(() => null);  // this is needed to prevent a "UnhandledPromiseRejectionWarning"
-        sandbox.stub(PaymentProcessor, "creditCardPayment").returns(rejection);
+        sandbox.stub(PaymentProcessor, "processCreditCardPayment").returns(rejection);
       });
 
       it("responds in json format", function() {
