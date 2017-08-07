@@ -3,7 +3,7 @@
 import check from "check-types";
 import cc_valid from "card-validator";
 
-import ModelErrors from "~/models/model_errors";
+import BaseModel from "~/models/base";
 
 /**
  * Credit card types
@@ -18,7 +18,7 @@ const CardTypes = {
   DISCOVER: "discover"
 };
 
-export default class CreditCard {
+export default class CreditCard extends BaseModel {
   /**
    * Credit Card
    *
@@ -30,17 +30,16 @@ export default class CreditCard {
    * @param  {String}  attrs.cvv          cvv/cvv2 code
    */
   constructor(attrs) {
-    this._name   = attrs.name;
-    this._number = attrs.number;
-    this._expire_year  = attrs.expire_year;
-    this._expire_month = attrs.expire_month;
-    this._cvv  = attrs.cvv;
+    super();
+
+    const _attrs = attrs || {};
+
+    this._name   = _attrs.name;
+    this._number = _attrs.number;
+    this._expire_year  = _attrs.expire_year;
+    this._expire_month = _attrs.expire_month;
+    this._cvv  = _attrs.cvv;
     this._type = this._parseCardType();
-
-    this._errors = new ModelErrors();
-
-    // validate properties
-    this._validate();
   }
 
   //
@@ -85,15 +84,18 @@ export default class CreditCard {
   get type() { return this._type; }
 
   //
-  // Public Methods
+  // Serialize
   //
 
-  /**
-   * Return whether properties of this credit card object are valid
-   * @return {Boolean} true if valid
-   */
-  isValid() {
-    return !this._errors.hasError();
+  toJSON() {
+    return {
+      name:   this.name,
+      number: this.number,
+      expire_year:  this.expire_year,
+      expire_month: this.expire_month,
+      cvv:  this.cvv,
+      type: this.type
+    };
   }
 
   //
@@ -109,31 +111,31 @@ export default class CreditCard {
     return parsed.isValid ? parsed.card.type : undefined;
   }
 
-  _validate() {
+  _validation() {
     // check name
     if (!check.nonEmptyString(this._name)) {
-      this._errors.add("name", "must be a non-empty string");
+      this.errors.add("name", "must be a non-empty string");
     }
 
     // number is invalid if card type is not found
     if (!this._type) {
-      this._errors.add("number", "invalid credit card number");
+      this.errors.add("number", "invalid credit card number");
     }
 
     // check expiration year
     if (!cc_valid.expirationYear(this._expire_year.toString()).isValid) {
-      this._errors.add("expire_year", "invalid expiration year");
+      this.errors.add("expire_year", "invalid expiration year");
     }
 
     // check expiration month
     if (!cc_valid.expirationMonth(this._expire_month.toString()).isValid) {
-      this._errors.add("expire_month", "invalid expiration month");
+      this.errors.add("expire_month", "invalid expiration month");
     }
 
     // check cvv
     const max_cvv_len = this._type === CardTypes.AMEX ? 4 : 3; // AMEX cvv is 4 digits
     if (!cc_valid.cvv(this._cvv, max_cvv_len).isValid) {
-      this._errors.add("cvv", "invalid cvv");
+      this.errors.add("cvv", "invalid cvv");
     }
   }
 }

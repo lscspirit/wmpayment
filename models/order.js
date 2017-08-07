@@ -2,7 +2,7 @@
 
 import check from "check-types";
 
-import ModelErrors from "~/models/model_errors";
+import BaseModel from "~/models/base";
 
 const Currencies = {
   HKD: "HKD",
@@ -13,7 +13,7 @@ const Currencies = {
   CNY: "CNY"
 };
 
-export default class Order {
+export default class Order extends BaseModel {
   /**
    * Order item
    *
@@ -22,18 +22,31 @@ export default class Order {
    * @param  {String} attrs.currency currency code
    */
   constructor(attrs) {
-    this._amount   = attrs.amount;
-    this._currency = attrs.currency;
+    super();
 
-    this._errors = new ModelErrors();
+    const _attrs = attrs || {};
 
-    // validate properties
-    this._validate();
+    this._name  = _attrs.name;
+    this._phone = _attrs.phone;
+    this._amount   = _attrs.amount;
+    this._currency = _attrs.currency;
   }
 
   //
   // Accessors
   //
+
+  /**
+   * Customer name
+   * @return {String} name
+   */
+  get name() { return this._name; }
+
+  /**
+   * Customer phone
+   * @return {String} phone number
+   */
+  get phone() { return this._phone; }
 
   /**
    * Item price
@@ -48,20 +61,33 @@ export default class Order {
   get currency() { return this._currency; }
 
   //
+  // Serialize
+  //
+
+  toJSON() {
+    return {
+      name:     this.name,
+      phone:    this.phone,
+      amount:   this.amount,
+      currency: this.currency
+    };
+  }
+
+  //
   // Private Methods
   //
 
-  _validate() {
+  _validation() {
     // check amount
     if (!check.positive(this._amount)) {
-      this._errors.add("amount", "must be positive");
+      this.errors.add("amount", "must be positive");
     }
 
     // check currency code
     if (!Currencies[this._currency]) {
-      this._errors.add("currency", "unsupported currency");
+      this.errors.add("currency", "unsupported currency");
     } else if (this._currency === Currencies.JPY && this._amount % 1 !== 0) {
-      this._errors.add("amount", "amount in JPY must be an integer");
+      this.errors.add("amount", "amount in JPY must be an integer");
     }
   }
 }

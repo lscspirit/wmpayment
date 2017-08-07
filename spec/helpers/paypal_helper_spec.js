@@ -18,11 +18,11 @@ describe("PaypalHelper", function() {
         this.desc = chance.sentence();
 
         // for the purpose of this spec, we exclude AMEX because it only supports USD
-        return factory.build("credit_card", {}, { excludeAmex: true }).then(cc => {
-          this.cc = cc;
-          return factory.build("order", {}, { currencies: ["USD", "EUR", "AUD"] });
-        }).then(order => {
-          this.order = order;
+        const cc_prom    = factory.build("credit_card", {}, { excludeAmex: true });
+        const order_prom = factory.build("order", {}, { currencies: ["USD", "EUR", "AUD"] });
+        return Promise.all([cc_prom, order_prom]).then(result => {
+          this.cc    = result[0];
+          this.order = result[1];
         });
       });
 
@@ -57,13 +57,11 @@ describe("PaypalHelper", function() {
       before(function() {
         this.desc = chance.sentence();
 
-        return factory.build("credit_card", { number: "1234567890" }).then(cc => {
-          this.cc = cc;
-          return factory.build("order", {
-            currency: chance.pickone(["HKD", "USD"])
-          });
-        }).then(order => {
-          this.order = order;
+        const cc_prom    = factory.build("credit_card", { number: "1234567890" });
+        const order_prom = factory.build("order", {}, { currencies: ["HKD", "USD"] });
+        return Promise.all([cc_prom, order_prom]).then(result => {
+          this.cc    = result[0];
+          this.order = result[1];
         });
       });
 
@@ -86,13 +84,11 @@ describe("PaypalHelper", function() {
       before(function() {
         this.desc = chance.sentence();
 
-        return factory.build("credit_card").then(cc => {
-          this.cc = cc;
-          return factory.build("order", {
-            currency: "ABC"
-          });
-        }).then(order => {
-          this.order = order;
+        const cc_prom    = factory.build("credit_card");
+        const order_prom = factory.build("order", { currency: "ABC" });
+        return Promise.all([cc_prom, order_prom]).then(result => {
+          this.cc    = result[0];
+          this.order = result[1];
         });
       });
 
