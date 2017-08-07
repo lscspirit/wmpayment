@@ -8,6 +8,9 @@ const chance = require('chance').Chance();
 factory.define("order", Order, buildOptions => {
   const attrs = {};
 
+  attrs.name  = chance.name();
+  attrs.phone = chance.phone();
+
   if (buildOptions.currencies) {
     attrs.currency = chance.pickone(buildOptions.currencies);
   } else {

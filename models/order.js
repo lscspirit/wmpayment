@@ -18,6 +18,8 @@ export default class Order extends BaseModel {
    * Order item
    *
    * @param  {Object} attrs    attributes
+   * @param  {String} attrs.name     customer name
+   * @param  {String} attrs.phone    customer phone number
    * @param  {Number} attrs.amount   price of the order
    * @param  {String} attrs.currency currency code
    */
@@ -26,8 +28,8 @@ export default class Order extends BaseModel {
 
     const _attrs = attrs || {};
 
-    this._name  = _attrs.name;
-    this._phone = _attrs.phone;
+    this._name  = _attrs.name  ? _attrs.name.trim() : "";
+    this._phone = _attrs.phone ? _attrs.phone.trim() : "";
     this._amount   = _attrs.amount;
     this._currency = _attrs.currency;
   }

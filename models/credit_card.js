@@ -34,7 +34,7 @@ export default class CreditCard extends BaseModel {
 
     const _attrs = attrs || {};
 
-    this._name   = _attrs.name;
+    this._name   = _attrs.name ? _attrs.name.trim() : "";
     this._number = _attrs.number;
     this._expire_year  = _attrs.expire_year;
     this._expire_month = _attrs.expire_month;
