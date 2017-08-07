@@ -33,13 +33,13 @@ factory.define("credit_card", CreditCard, buildOptions => {
 
   // generate expiration date
   if (buildOptions.expired) {
-    attrs.expire_month = parseInt(chance.exp_month(), 10);
+    attrs.expire_month = chance.exp_month();
     // get a year in the past
-    attrs.expire_year  = (new Date()).getFullYear() - chance.natural({ min: 1, max: 5 });
+    attrs.expire_year  = (new Date()).getFullYear() - chance.natural({ min: 1, max: 5 }).toString();
   } else {
     let future_exp = chance.exp({ raw: true });
-    attrs.expire_year  = parseInt(future_exp.year, 10);
-    attrs.expire_month = parseInt(future_exp.month, 10);
+    attrs.expire_year  = future_exp.year;
+    attrs.expire_month = future_exp.month;
   }
 
   // generate a cvv code

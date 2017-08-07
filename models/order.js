@@ -20,7 +20,7 @@ export default class Order extends BaseModel {
    * @param  {Object} attrs    attributes
    * @param  {String} attrs.name     customer name
    * @param  {String} attrs.phone    customer phone number
-   * @param  {Number} attrs.amount   price of the order
+   * @param  {String} attrs.amount   price of the order
    * @param  {String} attrs.currency currency code
    */
   constructor(attrs) {
@@ -30,7 +30,7 @@ export default class Order extends BaseModel {
 
     this._name  = _attrs.name  ? _attrs.name.trim() : "";
     this._phone = _attrs.phone ? _attrs.phone.trim() : "";
-    this._amount   = _attrs.amount;
+    this._amount   = _attrs.amount.toString().trim();
     this._currency = _attrs.currency;
   }
 
@@ -54,7 +54,7 @@ export default class Order extends BaseModel {
    * Item price
    * @return {Number} item price
    */
-  get amount() { return this._amount; }
+  get amount() { return parseFloat(this._amount); }
 
   /**
    * Price currency
@@ -80,15 +80,25 @@ export default class Order extends BaseModel {
   //
 
   _validation() {
+    // check name
+    if (this._name.length <= 3) {
+      this.errors.add("name", "must be longer than 3 characters");
+    }
+
+    // check phone number
+    if (!this._phone.match(/^(?!-)(?!.*--)^(?:\+\d+\ ?)?(?:\(\d+\)\ ?)?\d[\d\-\ ]{4,}\d\ *(?:,?\ *(?:(?:ext\.?\ *|x))?\d+)?$/i)) {
+      this.errors.add("phone", "not a valid phone number");
+    }
+
     // check amount
-    if (!check.positive(this._amount)) {
-      this.errors.add("amount", "must be positive");
+    if (!this._amount.match(/^\d+(?:\.\d{1,2})?$/)) {
+      this.errors.add("amount", "must be a positive number");
     }
 
     // check currency code
     if (!Currencies[this._currency]) {
       this.errors.add("currency", "unsupported currency");
-    } else if (this._currency === Currencies.JPY && this._amount % 1 !== 0) {
+    } else if (this._currency === Currencies.JPY && this.amount % 1 !== 0) {
       this.errors.add("amount", "amount in JPY must be an integer");
     }
   }

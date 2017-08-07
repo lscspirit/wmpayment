@@ -25,8 +25,8 @@ export default class CreditCard extends BaseModel {
    * @param  {Object}  attrs    attributes
    * @param  {String}  attrs.name         cardholder name
    * @param  {String}  attrs.number       card number
-   * @param  {Integer} attrs.expire_year  expiration year
-   * @param  {Integer} attrs.expire_month expiration month
+   * @param  {String}  attrs.expire_year  expiration year
+   * @param  {String}  attrs.expire_month expiration month
    * @param  {String}  attrs.cvv          cvv/cvv2 code
    */
   constructor(attrs) {
@@ -35,10 +35,10 @@ export default class CreditCard extends BaseModel {
     const _attrs = attrs || {};
 
     this._name   = _attrs.name ? _attrs.name.trim() : "";
-    this._number = _attrs.number;
-    this._expire_year  = _attrs.expire_year;
-    this._expire_month = _attrs.expire_month;
-    this._cvv  = _attrs.cvv;
+    this._number = _attrs.number.trim();
+    this._expire_year  = _attrs.expire_year.trim();
+    this._expire_month = _attrs.expire_month.trim();
+    this._cvv  = _attrs.cvv.trim();
     this._type = this._parseCardType();
   }
 
@@ -60,13 +60,13 @@ export default class CreditCard extends BaseModel {
 
   /**
    * Expiration Year
-   * @return {Integer} expiration year
+   * @return {String} expiration year
    */
   get expire_year()  { return this._expire_year; }
 
   /**
    * Expiration Month
-   * @return {Integer} expiration Month
+   * @return {String} expiration Month
    */
   get expire_month() { return this._expire_month; }
 
@@ -123,12 +123,12 @@ export default class CreditCard extends BaseModel {
     }
 
     // check expiration year
-    if (!cc_valid.expirationYear(this._expire_year.toString()).isValid) {
+    if (!cc_valid.expirationYear(this._expire_year).isValid) {
       this.errors.add("expire_year", "invalid expiration year");
     }
 
     // check expiration month
-    if (!cc_valid.expirationMonth(this._expire_month.toString()).isValid) {
+    if (!cc_valid.expirationMonth(this._expire_month).isValid) {
       this.errors.add("expire_month", "invalid expiration month");
     }
 
