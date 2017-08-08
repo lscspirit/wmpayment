@@ -10,6 +10,7 @@ import webpackDevMiddleware from "webpack-dev-middleware";
 import clientWebpackConfig from "~/webpack.client.config.js";
 
 import appRouter from "~/server/router";
+import { errorResponseJson } from "~/server/helpers/response_helper";
 
 //
 // Initialize Express
@@ -43,6 +44,31 @@ if (app.get("env") !== "production") {
     publicPath: clientWebpackConfig.output.publicPath
   }));
 }
+
+//
+// error handling
+//
+
+// error logging
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  next(err);
+});
+
+// client error handling
+app.use((err, req, res, next) => {
+  if (req.xhr) {
+    res.status(500).json(errorResponseJson("Oops! Something went wrong."));
+  } else {
+    next(err);
+  }
+});
+
+// catch-all error handling
+app.use((err, req, res, next) => {
+  res.status(500);
+  res.render("error", { error: err });
+});
 
 module.exports = app;
 
