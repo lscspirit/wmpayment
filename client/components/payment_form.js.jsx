@@ -29,6 +29,13 @@ class PaymentForm extends React.PureComponent {
       </Alert>
     ) : null;
 
+    const button_content = this.props.loading ? (
+      <span>
+        <span className="fa fa-spinner fa-spin fa-fw" style={{marginRight: 5}}/>
+        Processing
+      </span>
+    ) : "Submit";
+
     return (
       <Panel header="Payment Form" bsStyle="primary">
         { error_msg }
@@ -38,7 +45,10 @@ class PaymentForm extends React.PureComponent {
         <Row>
           <Col sm={12}>
             <Button bsStyle="primary"
-              onClick={ this.props.onSubmit } block>Submit</Button>
+              disabled={ this.props.loading }
+              onClick={ this.props.onSubmit } block>
+              { button_content }
+            </Button>
           </Col>
         </Row>
       </Panel>
@@ -55,14 +65,16 @@ class PaymentForm extends React.PureComponent {
       <Form>
         <FormGroup controlId="name" validationState={ name_errors.length > 0 ? "error" : null }>
           <ControlLabel>Name</ControlLabel>
-          <FormControl type="input" value={ this.props.order.get("name") }
+          <FormControl type="input" disabled={ this.props.loading }
+            value={ this.props.order.get("name") }
             onChange={ this.props.onChange.bind(null, "order", "name") }
             placeholder="Name"/>
           <HelpBlock>{ name_errors.length > 0 ? name_errors.join(', ') : null }</HelpBlock>
         </FormGroup>
         <FormGroup controlId="phone" validationState={ phone_errors.length > 0 ? "error" : null }>
           <ControlLabel>Phone</ControlLabel>
-          <FormControl type="input" value={ this.props.order.get("phone") }
+          <FormControl type="input" disabled={ this.props.loading }
+            value={ this.props.order.get("phone") }
             onChange={ this.props.onChange.bind(null, "order", "phone") }
             placeholder="Phone"/>
           <HelpBlock>{ phone_errors.length > 0 ? phone_errors.join(', ') : null }</HelpBlock>
@@ -72,6 +84,7 @@ class PaymentForm extends React.PureComponent {
             <FormGroup controlId="currency" validationState={ currency_errors.length > 0 ? "error" : null }>
               <ControlLabel>Currency</ControlLabel>
               <FormControl componentClass="select"
+                disabled={ this.props.loading }
                 value={ this.props.order.get("currency") }
                 onChange={ this.props.onChange.bind(null, "order", "currency") }>
                 <option value="">---</option>
@@ -88,6 +101,7 @@ class PaymentForm extends React.PureComponent {
             <FormGroup controlId="amount" validationState={ amount_errors.length > 0 ? "error" : null }>
               <ControlLabel>Amount</ControlLabel>
               <FormControl type="input"
+                disabled={ this.props.loading }
                 value={ this.props.order.get("amount") }
                 onChange={ this.props.onChange.bind(null, "order", "amount") }
                 placeholder="Amount"/>
@@ -120,6 +134,7 @@ class PaymentForm extends React.PureComponent {
         <FormGroup controlId="cc_name" validationState={ name_errors.length > 0 ? "error" : null }>
           <ControlLabel>Cardholder Name</ControlLabel>
           <FormControl type="input"
+            disabled={ this.props.loading }
             value={ this.props.cc.get("name") }
             onChange={ this.props.onChange.bind(null, "cc", "name") }
             placeholder="Cardholder Name"/>
@@ -130,6 +145,7 @@ class PaymentForm extends React.PureComponent {
             <FormGroup controlId="cc_number" validationState={ number_errors.length > 0 ? "error" : null }>
               <ControlLabel>Card Number</ControlLabel>
               <FormControl type="input"
+                disabled={ this.props.loading }
                 value={ this.props.cc.get("number") }
                 onChange={ this.props.onChange.bind(null, "cc", "number") }
                 placeholder="Card Number"/>
@@ -140,6 +156,7 @@ class PaymentForm extends React.PureComponent {
             <FormGroup controlId="cvv" validationState={ cvv_errors.length > 0 ? "error" : null }>
               <ControlLabel>CVV/CVV2</ControlLabel>
               <FormControl type="input"
+                disabled={ this.props.loading }
                 value={ this.props.cc.get("cvv") }
                 onChange={ this.props.onChange.bind(null, "cc", "cvv") }
                 placeholder="CVV/CVV2"/>
@@ -152,6 +169,7 @@ class PaymentForm extends React.PureComponent {
             <FormGroup controlId="exp_month" validationState={ expire_month_errors.length > 0 ? "error" : null }>
               <ControlLabel>Exp Month</ControlLabel>
               <FormControl componentClass="select"
+                disabled={ this.props.loading }
                 value={ this.props.cc.get("expire_month") }
                 onChange={ this.props.onChange.bind(null, "cc", "expire_month") }>
                 <option value="">-- Month --</option>
@@ -175,6 +193,7 @@ class PaymentForm extends React.PureComponent {
             <FormGroup controlId="exp_month" validationState={ expire_year_errors.length > 0 ? "error" : null }>
               <ControlLabel>Exp Year</ControlLabel>
               <FormControl componentClass="select"
+                disabled={ this.props.loading }
                 value={ this.props.cc.get("expire_year") }
                 onChange={ this.props.onChange.bind(null, "cc", "expire_year") }>
                 { yr_options }
@@ -188,6 +207,7 @@ class PaymentForm extends React.PureComponent {
   }
 }
 PaymentForm.propTypes = {
+  loading: PropTypes.bool.isRequired,
   errorMessage: PropTypes.string,
   order: ImmutablePropTypes.map.isRequired,
   orderErrors: PropTypes.instanceOf(ModelErrors).isRequired,
@@ -210,7 +230,8 @@ export default class PaymentFormContainer extends React.Component {
   }
 
   render() {
-    return <PaymentForm errorMessage={ this.state.errorMessage }
+    return <PaymentForm loading={ this.state.loading }
+      errorMessage={ this.state.errorMessage }
       order={ this.state.order } orderErrors={ this.state.orderErrors }
       cc={ this.state.cc } ccErrors={ this.state.ccErrors }
       onChange={ this._onValueChange } onSubmit={ this._onSubmit }/>;
@@ -223,6 +244,7 @@ export default class PaymentFormContainer extends React.Component {
   _freshState() {
     return {
       errorMessage: null,
+      loading: false,
       order: Map({
         name:     "",
         phone:    "",
@@ -263,13 +285,22 @@ export default class PaymentFormContainer extends React.Component {
       }, err => {
         this.setState({
           errorMessage: err.error,
+          loading: false,
           orderErrors: new ModelErrors(err.details.order || {}),
           ccErrors: new ModelErrors(err.details.cc || {})
         });
       });
+
+      // set loading state and clear validation error
+      this.setState({
+        loading: true,
+        orderErrors: new ModelErrors(),
+        ccErrors: new ModelErrors()
+      });
     } else {
       this.setState({
         errorMessage: "invalid order or credit card",
+        loading: false,
         orderErrors: order.errors,
         ccErrors:    cc.errors
       });
