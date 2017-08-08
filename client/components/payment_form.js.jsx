@@ -10,7 +10,6 @@ import {
   Button, HelpBlock, Alert
 } from "react-bootstrap";
 
-import server from "~/client/helpers/server_client";
 import { ModelErrors } from "~/models/base";
 import Order from "~/models/order";
 import CreditCard from "~/models/credit_card";
@@ -76,12 +75,11 @@ class PaymentForm extends React.PureComponent {
                 value={ this.props.order.get("currency") }
                 onChange={ this.props.onChange.bind(null, "order", "currency") }>
                 <option value="">---</option>
-                <option value="HKD">HKD</option>
-                <option value="USD">USD</option>
-                <option value="AUD">AUD</option>
-                <option value="EUR">EUR</option>
-                <option value="JPY">JPY</option>
-                <option value="CNY">CNY</option>
+                {
+                  Object.keys(Order.Currencies).map(cur => {
+                    return (<option key={cur} value={cur}>{cur}</option>);
+                  })
+                }
               </FormControl>
               <HelpBlock>{ currency_errors.length > 0 ? currency_errors.join(', ') : null }</HelpBlock>
             </FormGroup>
@@ -228,7 +226,7 @@ export default class PaymentFormContainer extends React.Component {
       order: Map({
         name:     "",
         phone:    "",
-        currency: Order.Currencies[0],
+        currency: "",
         amount:   ""
       }),
       orderErrors: new ModelErrors(),
@@ -260,7 +258,7 @@ export default class PaymentFormContainer extends React.Component {
 
     if (order.errors.isEmpty() && cc.errors.isEmpty()) {
       // if the form is valid, then send the request
-      server.client.createPayment(order, cc).then(transaction => {
+      this.props.onSubmit(order, cc).then(transaction => {
         this.setState(this._freshState());
       }, err => {
         this.setState({
@@ -296,4 +294,8 @@ export default class PaymentFormContainer extends React.Component {
       cvv: this.state.cc.get("cvv")
     });
   }
+}
+
+PaymentFormContainer.propTypes = {
+  onSubmit: PropTypes.func.isRequired
 }

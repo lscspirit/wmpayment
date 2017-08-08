@@ -22,7 +22,7 @@ export default class Transaction extends BaseModel {
    *
    * @example <caption>with attributes</caption>
    *   new Transaction(order, "paypal", "dk3n2i9djl2h2");
-   *   
+   *
    * @constructor
    */
   constructor(attrs_or_order, gateway, gateway_ref) {
@@ -31,8 +31,8 @@ export default class Transaction extends BaseModel {
     let _attrs = null;
     if (arguments.length === 3) {
       _attrs = {
-        cust_name:  attrs_or_order.customerName,
-        cust_phone: attrs_or_order.customerPhone,
+        cust_name:  attrs_or_order.name,
+        cust_phone: attrs_or_order.phone,
         currency:   attrs_or_order.currency,
         amount:     attrs_or_order.amount,
         payment_gateway: gateway,

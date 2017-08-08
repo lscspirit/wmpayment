@@ -27,6 +27,7 @@
     "card-validator": "^4.1.0",
     "check-types": "^7.2.0",
     "config": "^1.26.1",
+    "currency-symbol-map": "^4.0.1",
     "ejs": "^2.5.7",
     "express": "^4.15.3",
     "immutable": "^3.8.1",

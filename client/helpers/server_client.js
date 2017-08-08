@@ -2,6 +2,8 @@
 
 import $ from "jquery";
 
+import Transaction from "~/models/transaction";
+
 let _client = null;
 export default class ServerClient {
   /**
@@ -49,10 +51,10 @@ export default class ServerClient {
 
     return new Promise((resolve, reject) => {
       req
-        .done(data => resolve(data))
+        .done(data => resolve(new Transaction(data)))
         .fail((xhr, status, err) => {
           if (xhr.status >= 400 && xhr.status < 500) {
-            reject(xhr.responseJSON);            
+            reject(xhr.responseJSON);
           } else {
             reject(new Error(status));
           }

@@ -5,9 +5,9 @@ require("~/assets/stylesheets/main.scss");
 import React from "react";
 import ReactDOM from "react-dom";
 
-import PaymentFormContainer from "~/client/components/payment_form";
+import AppContainer from "~/client/components/app_container";
 
 (function() {
-  const container = document.getElementById("payment-form");
-  ReactDOM.render(React.createElement(PaymentFormContainer), container);
+  const container = document.getElementById("app");
+  ReactDOM.render(React.createElement(AppContainer), container);
 })();
