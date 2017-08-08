@@ -4,6 +4,13 @@
     "db":   "wmpayment"
   },
 
+  "redis": {
+    "host": "localhost",
+    "port": 6379,
+    "db":   0,
+    "ttl":  100
+  },
+
   "paypal": {
     "mode": "sandbox",
     "clientId": "AWeStnDwQVPIQwxhsVplXCBeySDq-ehG5Sk_WLvy4nKIprmIC7ZQdZU7S7lGhYCX8VHpAkcBW7mS8AkB",

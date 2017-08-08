@@ -13,12 +13,14 @@ import appRouter from "~/server/router";
 import { errorResponseJson } from "~/server/helpers/response_helper";
 
 import MongooseHelper from "~/server/helpers/mongoose_helper";
+import RedisHelper from "~/server/helpers/redis_helper";
 
 //
-// Mongo DB Initialization
+// Mongo DB and Redis Initialization
 //
 
 MongooseHelper.init();
+RedisHelper.init();
 
 //
 // Initialize Express
