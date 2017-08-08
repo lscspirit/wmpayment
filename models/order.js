@@ -30,7 +30,7 @@ export default class Order extends BaseModel {
 
     this._name  = _attrs.name  ? _attrs.name.trim() : "";
     this._phone = _attrs.phone ? _attrs.phone.trim() : "";
-    this._amount   = _attrs.amount.toString().trim();
+    this._amount   = _attrs.amount ? _attrs.amount.toString().trim() : "";
     this._currency = _attrs.currency;
   }
 

@@ -122,14 +122,13 @@ export default class CreditCard extends BaseModel {
       this.errors.add("number", "invalid credit card number");
     }
 
-    // check expiration year
-    if (!cc_valid.expirationYear(this._expire_year).isValid) {
-      this.errors.add("expire_year", "invalid expiration year");
-    }
-
-    // check expiration month
-    if (!cc_valid.expirationMonth(this._expire_month).isValid) {
-      this.errors.add("expire_month", "invalid expiration month");
+    // check expiration date
+    if (!cc_valid.expirationDate({
+      month: this._expire_month,
+      year: this._expire_year
+    }).isValid) {
+      this.errors.add("expire_year", "expired");
+      this.errors.add("expire_month", "expired");
     }
 
     // check cvv
