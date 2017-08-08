@@ -8,6 +8,7 @@ import { factory } from "factory-girl";
 import PaymentProcessor from "~/server/lib/payment_processor";
 import PaypalGateway from "~/server/lib/gateways/paypal_gateway";
 import BraintreeGateway from "~/server/lib/gateways/braintree_gateway";
+import TransactionRecord from "~/server/records/transaction_record";
 
 let sandbox;
 
@@ -15,9 +16,17 @@ describe("PaymentProcessor", function() {
   describe("::processCreditCardPayment()", function() {
     beforeEach(function() {
       sandbox = sinon.sandbox.create();
-      // stub the gateways' creditCardPayment()
-      this.paypal_cc    = sandbox.stub(PaypalGateway, "creditCardPayment").returns(Promise.resolve());
-      this.braintree_cc = sandbox.stub(BraintreeGateway, "creditCardPayment").returns(Promise.resolve());
+
+      return factory.build("transaction").then(t => {
+        this.transaction = t;
+
+        // stub database save method
+        sandbox.stub(TransactionRecord.prototype, "save").returns(Promise.resolve());
+
+        // stub the gateways' creditCardPayment()
+        this.paypal_cc    = sandbox.stub(PaypalGateway, "creditCardPayment").returns(Promise.resolve(t));
+        this.braintree_cc = sandbox.stub(BraintreeGateway, "creditCardPayment").returns(Promise.resolve(t));
+      });
     });
 
     afterEach(function() {
