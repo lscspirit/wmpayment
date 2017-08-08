@@ -32,13 +32,16 @@
     "express": "^4.15.3",
     "immutable": "^3.8.1",
     "jquery": "^3.2.1",
+    "mongoose": "^4.11.6",
     "morgan": "^1.8.2",
     "paypal-rest-sdk": "^1.7.1",
     "prop-types": "^15.5.10",
     "react": "^15.6.1",
     "react-bootstrap": "^0.31.2",
     "react-dom": "^15.6.1",
-    "react-immutable-proptypes": "^2.1.0"
+    "react-immutable-proptypes": "^2.1.0",
+    "redis": "^2.8.0",
+    "url-join": "^2.0.2"
   },
   "devDependencies": {
     "babel-cli": "^6.24.1",

@@ -3,6 +3,7 @@
 import CreditCard from "~/models/credit_card";
 import PaypalGateway from "~/server/lib/gateways/paypal_gateway";
 import BraintreeGateway from "~/server/lib/gateways/braintree_gateway";
+import TransactionRecord from "~/server/records/transaction_record";
 
 export default class PaymentProcessor {
   /**
@@ -30,6 +31,18 @@ export default class PaymentProcessor {
     }
 
     // make the credit card payment
-    return gateway.creditCardPayment(cc, order, "direct credit card payment");
+    const op = gateway.creditCardPayment(cc, order, "direct credit card payment");
+    return op.then(persistTransaction);
   }
+}
+
+//
+// Helper Methods
+//
+
+function persistTransaction(transaction) {
+  const record = new TransactionRecord(transaction.toJSON());
+  return record.save().then(() => {
+    return record.toModel();
+  });
 }

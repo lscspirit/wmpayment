@@ -12,6 +12,14 @@ import clientWebpackConfig from "~/webpack.client.config.js";
 import appRouter from "~/server/router";
 import { errorResponseJson } from "~/server/helpers/response_helper";
 
+import MongooseHelper from "~/server/helpers/mongoose_helper";
+
+//
+// Mongo DB Initialization
+//
+
+MongooseHelper.init();
+
 //
 // Initialize Express
 //

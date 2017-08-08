@@ -1,4 +1,9 @@
 {
+  "mongodb": {
+    "host": "localhost",
+    "db":   "wmpayment"
+  },
+
   "paypal": {
     "mode": "sandbox",
     "clientId": "AWeStnDwQVPIQwxhsVplXCBeySDq-ehG5Sk_WLvy4nKIprmIC7ZQdZU7S7lGhYCX8VHpAkcBW7mS8AkB",
