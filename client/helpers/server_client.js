@@ -61,4 +61,34 @@ export default class ServerClient {
         });
     });
   }
+
+  /**
+   * Search for a payment record
+   *
+   * @param  {String} id   transaction id
+   * @param  {String} name customer name
+   * @return {Promise<Transaction>} 
+   */
+  searchTransaction(id, name) {
+    const payload = { id, name };
+    const req = $.ajax({
+      type: "POST",
+      url: "/payments/search",
+      data: JSON.stringify(payload),
+      dataType: "json",
+      contentType: "application/json; charset=utf-8"
+    });
+
+    return new Promise((resolve, reject) => {
+      req
+        .done(data => resolve(new Transaction(data)))
+        .fail((xhr, status, err) => {
+          if (xhr.status >= 400 && xhr.status < 500) {
+            reject(xhr.responseJSON);
+          } else {
+            reject(new Error(status));
+          }
+        });
+    });
+  }
 }

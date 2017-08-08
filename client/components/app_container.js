@@ -5,7 +5,8 @@ import { Row, Col } from "react-bootstrap";
 
 import server from "~/client/helpers/server_client";
 import PaymentFormContainer from "~/client/components/payment_form";
-import TransactionDisplay from "~/client/components/transaction_display";
+import SearchFormContainer from "~/client/components/search_form";
+import TransactionDisplay, { TransactionNotFound } from "~/client/components/transaction_display";
 import lightbox from "~/client/components/lightbox";
 
 export default class AppContainer extends React.Component {
@@ -17,6 +18,7 @@ export default class AppContainer extends React.Component {
     };
 
     this._submitPayment = this._submitPayment.bind(this);
+    this._submitSearch  = this._submitSearch.bind(this);
     this._onLbClose = this._onLbClose.bind(this);
   }
 
@@ -26,7 +28,9 @@ export default class AppContainer extends React.Component {
       <div>
         { this.state.lightbox }
         <Row>
-
+          <Col sm={6} smOffset={3}>
+            <SearchFormContainer onSubmit={this._submitSearch}/>
+          </Col>
         </Row>
         <Row>
           <Col sm={6} smOffset={3}>
@@ -55,6 +59,35 @@ export default class AppContainer extends React.Component {
           onClose={this._onLbClose}/>
       });
     }, () => {});
+
+    return prom;
+  }
+
+  /**
+   * Submit a payment record search
+   * @param  {String} id   transaction id
+   * @param  {String} name customer name
+   * @return {Promise<Transaction>}
+   */
+  _submitSearch(id, name) {
+    const prom = server.client.searchTransaction(id, name);
+
+    // display result in lightbox
+    prom.then(transaction => {
+      let LbComp = lightbox(TransactionDisplay);
+      this.setState({
+        lightbox: <LbComp transaction={transaction}
+          lbMessage="Payment Record Found"
+          onClose={this._onLbClose}/>
+      });
+    }, err => {
+      let LbComp = lightbox();
+      this.setState({
+        lightbox: <LbComp
+          lbMessage="Payment Record Not Found"
+          onClose={this._onLbClose}/>
+      });
+    });
 
     return prom;
   }

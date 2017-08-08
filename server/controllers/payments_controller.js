@@ -5,6 +5,7 @@ import express from "express";
 import Order from "~/models/order";
 import CreditCard from "~/models/credit_card";
 import PaymentProcessor from "~/server/lib/payment_processor";
+import TransactionRecord from "~/server/records/transaction_record";
 import { errorResponseJson } from "~/server/helpers/response_helper";
 
 const router = express.Router();
@@ -29,6 +30,18 @@ router.post("/", function(req, res, next) {
       cc: cc.errors.all
     }));
   }
+});
+
+router.post("/search", function(req, res, next) {
+  TransactionRecord.search(req.body.id, req.body.name).then(transaction => {
+    if (transaction) {
+      res.status(200).json(transaction);
+    } else {
+      res.status(404).json(errorResponseJson("record not found"));
+    }
+  }, error => {
+    res.status(400).json(errorResponseJson(error));
+  });
 });
 
 export default router;

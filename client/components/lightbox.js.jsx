@@ -24,7 +24,7 @@ export default function lightbox(ContentComponent) {
         <div className="wm-lightbox">
           <Panel className="wm-lightbox-panel">
             { message }
-            <ContentComponent {...other}/>
+            { ContentComponent ? <ContentComponent {...other}/> : null }
             <div className="panel-actions">
               <Button onClick={ onClose } bsStyle="primary">Close</Button>
             </div>
