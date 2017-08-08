@@ -5,6 +5,8 @@ import chaiHttp from "chai-http";
 import sinonChai from "sinon-chai";
 import chaiAsPromised from "chai-as-promised";
 
+process.env.NODE_ENV = "test";
+
 //
 // Import all factories
 //

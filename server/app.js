@@ -36,7 +36,9 @@ app.set("views", path.join(__dirname, "../views"));
 app.set("view engine", "ejs");
 
 // setup request logging
-app.use(morgan('combined'));
+if (process.env.NODE_ENV !== "test") {
+  app.use(morgan('combined'));  
+}
 
 // setup request parsing
 app.use(bodyParser.json());
@@ -48,7 +50,7 @@ app.use(appRouter);
 // Configure Webpack
 //
 
-if (app.get("env") !== "production") {
+if (app.get("env") !== "production" && process.env.NODE_ENV !== "test") {
   const webpackCompiler = webpack(clientWebpackConfig);
   app.use(webpackDevMiddleware(webpackCompiler, {
     publicPath: clientWebpackConfig.output.publicPath
