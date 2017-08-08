@@ -6,7 +6,7 @@ import { expect } from "chai";
 import { factory } from "factory-girl";
 
 import PaymentProcessor from "~/server/lib/payment_processor";
-import PaypalGateway from "~/server/lib/gateways/payment_gateway";
+import PaypalGateway from "~/server/lib/gateways/paypal_gateway";
 import BraintreeGateway from "~/server/lib/gateways/braintree_gateway";
 
 let sandbox;

@@ -98,7 +98,7 @@ describe("POST /payments", function() {
         }),
         cc: pickRandomFields({
           number: chance.pickone(["12345678901234", "0000000000000"]),
-          expire_month: chance.integer({ min: 13, max: 20 })
+          cvv: chance.word({ length: 3 })
         })
       };
 

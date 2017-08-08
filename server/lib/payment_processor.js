@@ -1,7 +1,7 @@
 "use strict";
 
 import CreditCard from "~/models/credit_card";
-import PaypalGateway from "~/server/lib/gateways/payment_gateway";
+import PaypalGateway from "~/server/lib/gateways/paypal_gateway";
 import BraintreeGateway from "~/server/lib/gateways/braintree_gateway";
 
 export default class PaymentProcessor {
