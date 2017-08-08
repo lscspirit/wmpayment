@@ -61,12 +61,17 @@ export default class BaseModel {
  * A generic class that represent validation errors in a model
  */
 export class ModelErrors {
-  constructor() {
+  /**
+   * Create a ModelErrors object
+   * @param  {Object<String, Array<String>>} [data] error data
+   * @constructor
+   */
+  constructor(data) {
     /**
      * Property errors map
      * @type {Object<String, Array<String>>}
      */
-    this._prop_errors = {};
+    this._prop_errors = data || {};
   }
 
   //

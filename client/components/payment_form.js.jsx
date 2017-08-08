@@ -7,9 +7,10 @@ import ImmutablePropTypes from "react-immutable-proptypes";
 import {
   Form, FormGroup, FormControl,
   Col, Row, ControlLabel, Panel,
-  Button, HelpBlock
+  Button, HelpBlock, Alert
 } from "react-bootstrap";
 
+import server from "~/client/helpers/server_client";
 import { ModelErrors } from "~/models/base";
 import Order from "~/models/order";
 import CreditCard from "~/models/credit_card";
@@ -23,8 +24,15 @@ class PaymentForm extends React.PureComponent {
   }
 
   render() {
+    const error_msg = this.props.errorMessage ? (
+      <Alert bsStyle="danger">
+        { this.props.errorMessage }
+      </Alert>
+    ) : null;
+
     return (
       <Panel header="Payment Form" bsStyle="primary">
+        { error_msg }
         { this._buildOrderSection() }
         { this._buildCreditCardSection() }
 
@@ -182,6 +190,7 @@ class PaymentForm extends React.PureComponent {
   }
 }
 PaymentForm.propTypes = {
+  errorMessage: PropTypes.string,
   order: ImmutablePropTypes.map.isRequired,
   orderErrors: PropTypes.instanceOf(ModelErrors).isRequired,
   cc:    ImmutablePropTypes.map.isRequired,
@@ -194,7 +203,28 @@ export default class PaymentFormContainer extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {
+    this.state = this._freshState();
+
+    this._onValueChange = this._onValueChange.bind(this);
+    this._onSubmit = this._onSubmit.bind(this);
+    this._getOrder = this._getOrder.bind(this);
+    this._getCreditCard = this._getCreditCard.bind(this);
+  }
+
+  render() {
+    return <PaymentForm errorMessage={ this.state.errorMessage }
+      order={ this.state.order } orderErrors={ this.state.orderErrors }
+      cc={ this.state.cc } ccErrors={ this.state.ccErrors }
+      onChange={ this._onValueChange } onSubmit={ this._onSubmit }/>;
+  }
+
+  //
+  // Private Methods
+  //
+
+  _freshState() {
+    return {
+      errorMessage: null,
       order: Map({
         name:     "",
         phone:    "",
@@ -211,16 +241,6 @@ export default class PaymentFormContainer extends React.Component {
       }),
       ccErrors: new ModelErrors()
     };
-
-    this._onValueChange = this._onValueChange.bind(this);
-    this._onSubmit = this._onSubmit.bind(this);
-  }
-
-  render() {
-    return <PaymentForm
-      order={ this.state.order } orderErrors={ this.state.orderErrors }
-      cc={ this.state.cc } ccErrors={ this.state.ccErrors }
-      onChange={ this._onValueChange } onSubmit={ this._onSubmit }/>;
   }
 
   _onValueChange(target, field, evt) {
@@ -231,41 +251,49 @@ export default class PaymentFormContainer extends React.Component {
   }
 
   _onSubmit() {
-    const order_errors = this._validateOrder();
-    const cc_errors    = this._validateCreditCard();
+    const order = this._getOrder();
+    const cc    = this._getCreditCard();
 
-    if (order_errors.isEmpty() && cc_errors.isEmpty()) {
+    // validates object
+    order.validate();
+    cc.validate();
+
+    if (order.errors.isEmpty() && cc.errors.isEmpty()) {
       // if the form is valid, then send the request
+      server.client.createPayment(order, cc).then(transaction => {
+        this.setState(this._freshState());
+      }, err => {
+        this.setState({
+          errorMessage: err.error,
+          orderErrors: new ModelErrors(err.details.order || {}),
+          ccErrors: new ModelErrors(err.details.cc || {})
+        });
+      });
     } else {
       this.setState({
-        orderErrors: order_errors,
-        ccErrors:    cc_errors
+        errorMessage: "invalid order or credit card",
+        orderErrors: order.errors,
+        ccErrors:    cc.errors
       });
     }
   }
 
-  _validateOrder() {
-    const order = new Order({
+  _getOrder() {
+    return new Order({
       name:     this.state.order.get("name"),
       phone:    this.state.order.get("phone"),
       amount:   this.state.order.get("amount"),
       currency: this.state.order.get("currency")
     });
-
-    order.validate();
-    return order.errors;
   }
 
-  _validateCreditCard() {
-    const cc = new CreditCard({
+  _getCreditCard() {
+    return new CreditCard({
       name:   this.state.cc.get("name"),
       number: this.state.cc.get("number"),
       expire_year:  this.state.cc.get("expire_year"),
       expire_month: this.state.cc.get("expire_month"),
       cvv: this.state.cc.get("cvv")
     });
-
-    cc.validate();
-    return cc.errors;
   }
 }
