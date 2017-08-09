@@ -50,6 +50,10 @@ Now, the app will be available at http://127.0.0.1:4000.
 
 Settings for database, redis and external services can be found at `/config/default.json`.
 
+## Data Persistent
+
+Data stored within a Docker container lives only within the life-cycle of the container. Therefore, once the container is killed, all the data will be gone. In this case, data within the MongoDB database and Redis server (Redis is memory only in this setup anyways) will not persists. There are ways to map persistent data volume to each container, but that is out of the scope of this exercise.
+
 ## Testing
 
 ### Test Suite
